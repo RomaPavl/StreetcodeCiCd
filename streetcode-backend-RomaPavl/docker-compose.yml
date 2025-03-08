@@ -1,0 +1,62 @@
+services:
+  frontend:
+    build:
+      context: ../streetcode-frontend-RomaPavl
+      dockerfile: Dockerfilefront
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - product
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+      - "5000:5000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Local
+      - ASPNETCORE_HTTP_PORT=5000
+      - ASPNETCORE_HTTPS_PORT=5001
+      - ASPNETCORE_URLS=https://+:5001;http://+:5000
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=123
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/streetcode.pfx
+    volumes:
+      - C:/Users/Admin/.aspnet/https:/https
+    networks:
+      - product
+ 
+  db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      - MSSQL_SA_PASSWORD=Admin@1234
+      - ACCEPT_EULA=Y
+      - DB_NAME=StreetcodeDb
+      - DB_USER=sa
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - product
+
+  redis:
+    image: "redis:alpine"
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - product
+
+volumes:
+  sqlserver_data:
+
+networks:
+  product:

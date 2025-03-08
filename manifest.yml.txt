@@ -1,0 +1,227 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: streetcode
+
+---
+
+# 🔹 PVC для бази даних
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlserver-pvc
+  namespace: streetcode
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+# 🔹 Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: streetcode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: rodriguez2711/streetcode:1.0.1
+          ports:
+            - containerPort: 5001
+            - containerPort: 5000
+          env:
+            - name: ASPNETCORE_HTTP_PORT
+              value: "5000"
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "5001"
+            - name: ASPNETCORE_URLS
+              value: "http://0.0.0.0:5000;https://0.0.0.0:5001"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: "123"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: "/https/streetcode.pfx"
+          volumeMounts:
+            - name: https-cert
+              mountPath: "/https"
+              readOnly: true
+      volumes:
+        - name: https-cert
+          secret:
+            secretName: https-cert-secret
+---
+
+# 🔹 Backend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: streetcode
+spec:
+  selector:
+    app: backend
+  ports:
+    - name: https
+      protocol: TCP
+      port: 5001
+      targetPort: 5001
+    - name: http
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: ClusterIP
+
+---
+
+# 🔹 Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: streetcode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: rodriguez2711/streetfront:1.1.6
+          ports:
+            - containerPort: 3000
+
+---
+
+# 🔹 Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: streetcode
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: LoadBalancer
+
+---
+
+# 🔹 Database (MSSQL) Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: streetcode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      securityContext:
+        fsGroup: 10001 
+      containers:
+        - name: db
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          securityContext:
+            runAsUser: 10001
+          ports:
+            - containerPort: 1433
+          env:
+            - name: MSSQL_SA_PASSWORD
+              value: "Admin@1234"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: DB_NAME
+              value: "StreetcodeDb"
+            - name: DB_USER
+              value: "sa"
+          volumeMounts:
+            - name: sqlserver-data
+              mountPath: /var/opt/mssql
+      volumes:
+        - name: sqlserver-data
+          persistentVolumeClaim:
+            claimName: sqlserver-pvc
+
+---
+
+# 🔹 Database Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: streetcode
+spec:
+  selector:
+    app: db
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+  type: ClusterIP
+
+---
+
+# 🔹 Redis Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: streetcode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort: 6379
+
+---
+
+# 🔹 Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: streetcode
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+  type: ClusterIP
