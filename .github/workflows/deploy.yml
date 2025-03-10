@@ -30,7 +30,7 @@ jobs:
     - name: Save cert
       run: mkdir -p https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
     - name: Setup all infrastructure
-      run: cd streetcode-backend-RomaPavl && docker compose up --build
+      run: cd streetcode-backend-RomaPavl && docker compose up -d --build 
     - name: Waiting 10sec
       run: sleep 10
     - name: Check db' tables
