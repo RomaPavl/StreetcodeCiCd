@@ -27,9 +27,8 @@ jobs:
         echo "ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD=${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}" >> .env
         echo "ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH=${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}" >> .env
         echo "ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS }}" >> .env
-    - name: Зберегти сертифікат у контейнері
-      run: |
-        echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
+    - name: Save cert
+      run: mkdir -p https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
     - name: Setup all infrastructure
       run: docker compose up --build
     - name: Waiting 10sec
