@@ -33,8 +33,13 @@ jobs:
       run: cd streetcode-backend-RomaPavl && docker compose build --no-cache
     - name: Setup all infrastructure
       run: cd streetcode-backend-RomaPavl && docker compose up -d 
-    - name: Waiting 140sec
-      run: sleep 140
+    - name: Wait for backend to be ready
+      run: |
+          until curl -k -s https://localhost:5001/api/health; do
+            echo "Waiting for backend to be ready..."
+            sleep 5
+          done
+          echo "Backend is ready!"
     - name: Check frontend' logs
       run: docker logs streetcode-backend-romapavl-frontend-1
     - name: Check backend' logs
