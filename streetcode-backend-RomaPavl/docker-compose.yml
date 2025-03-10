@@ -10,7 +10,7 @@ services:
     env_file:
         - .env
     environment:
-      - REACT_APP_BACKEND_URL=${{REACT_APP_BACKEND_URL}}
+      - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
     networks:
       - product
 
@@ -27,11 +27,11 @@ services:
     env_file:
         - .env
     environment:
-      - ASPNETCORE_HTTP_PORT=${{ASPNETCORE_HTTP_PORT}}
-      - ASPNETCORE_HTTPS_PORT=${{ASPNETCORE_HTTPS_PORT}}
-      - ASPNETCORE_URLS=${{ASPNETCORE_URLS}}
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${{ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD}}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=${{ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH}}
+      - ASPNETCORE_HTTP_PORT=${ASPNETCORE_HTTP_PORT}
+      - ASPNETCORE_HTTPS_PORT=${ASPNETCORE_HTTPS_PORT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH}
     volumes:
       - ./https:/https
     networks:
@@ -45,10 +45,10 @@ services:
     env_file:
         - .env
     environment:
-      - MSSQL_SA_PASSWORD=${{MSSQL_SA_PASSWORD}}
-      - ACCEPT_EULA=${{ACCEPT_EULA}}
-      - DB_NAME=${{DB_NAME}}
-      - DB_USER=${{DB_USER}}
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - ACCEPT_EULA=${ACCEPT_EULA}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
     volumes:
       - sqlserver_data:/var/opt/mssql
     networks:
