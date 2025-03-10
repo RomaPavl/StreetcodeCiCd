@@ -33,14 +33,14 @@ jobs:
       run: cd streetcode-backend-RomaPavl && docker compose build --no-cache
     - name: Setup all infrastructure
       run: cd streetcode-backend-RomaPavl && docker compose up -d 
-    - name: Waiting 10sec
-      run: sleep 60
-    - name: Check db' tables
-      run: docker exec streetcode-backend-romapavl-db-1 /opt/mssql-tools18/bin/sqlcmd -S "db,1433" -U "${{ secrets.DB_USER }}" -P "${{ secrets.MSSQL_SA_PASSWORD }}" -C -Q "SELECT name FROM sys.tables"
+    - name: Waiting 90sec
+      run: sleep 90
     - name: Check frontend' logs
       run: docker logs streetcode-backend-romapavl-frontend-1
     - name: Check backend' logs
       run: docker logs streetcode-backend-romapavl-backend-1
+    - name: Check database tables
+      run: docker exec streetcode-backend-romapavl-db-1 /opt/mssql-tools18/bin/sqlcmd -S "db,${{ secrets.MS_SQL_DB_PORT }}" -U "${{ secrets.DB_USER }}" -P "${{ secrets.MSSQL_SA_PASSWORD }}" -C -Q "SELECT name FROM sys.tables"
     - name: Testing frontend
       run: docker exec streetcode-backend-romapavl-frontend-1 curl -vk http://localhost:3000  
     - name: Testing backend
