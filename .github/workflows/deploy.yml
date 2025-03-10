@@ -30,9 +30,9 @@ jobs:
     - name: Save cert
       run: mkdir -p https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
     - name: Setup all infrastructure
-      run: cd streetcode-backend-RomaPavl && docker compose up -d --build 
+      run: cd streetcode-backend-RomaPavl && docker compose up -d --build --no-cache
     - name: Waiting 10sec
-      run: sleep 10
+      run: sleep 60
     - name: Check db' tables
       run: docker exec streetcode-backend-romapavl-db-1 /opt/mssql-tools18/bin/sqlcmd -S "db,1433" -U "${{ secrets.DB_USER }}" -P "${{ secrets.MSSQL_SA_PASSWORD }}" -C -Q "SELECT name FROM sys.tables"
     - name: Check frontend' logs
