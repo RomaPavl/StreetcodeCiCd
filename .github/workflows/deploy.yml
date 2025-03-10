@@ -35,7 +35,7 @@ jobs:
       run: cd streetcode-backend-RomaPavl && docker compose up -d 
     - name: Wait for backend to be ready
       run: |
-          until docker exec streetcode-backend-romapavl-backend-1 curl -k -s https://localhost:5001/api/health; do
+          until docker exec streetcode-backend-romapavl-backend-1 curl -k -s https://localhost:5001/api/streetcode/getAllMainPage; do
             echo "Waiting for backend to be ready inside the container..."
             sleep 5
           done
