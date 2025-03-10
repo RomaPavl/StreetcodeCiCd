@@ -29,8 +29,10 @@ jobs:
         echo "ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS }}" >> .env
     - name: Save cert
       run: mkdir -p https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
+    - name: Build 
+      run: cd streetcode-backend-RomaPavl && docker compose build --no-cache
     - name: Setup all infrastructure
-      run: cd streetcode-backend-RomaPavl && docker compose up -d --build --no-cache
+      run: cd streetcode-backend-RomaPavl && docker compose up -d 
     - name: Waiting 10sec
       run: sleep 60
     - name: Check db' tables
