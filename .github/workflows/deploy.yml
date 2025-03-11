@@ -32,7 +32,9 @@ jobs:
       with:
         dotnet-version: '6.0.404'
     - name: Generate HTTPS certificate
-      run: mkdir -p https && dotnet dev-certs https -ep ./https/streetcode.pfx -p "${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}"
+      run: mkdir -p https && dotnet dev-certs https --clean && dotnet dev-certs https -ep ./https/streetcode.pfx -p "${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}"
+    - name: Chanhe permission
+      run: chmod 644 https/streetcode.pfx
     - name: Show cert
       run: ls -al ./https
     - name: Move .env to backend directory
