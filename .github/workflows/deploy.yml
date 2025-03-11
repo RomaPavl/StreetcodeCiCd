@@ -32,7 +32,7 @@ jobs:
     - name: Build 
       run: cd streetcode-backend-RomaPavl && docker compose build --no-cache
     - name: Setup all infrastructure
-      run: cd streetcode-backend-RomaPavl && docker compose up & 
+      run: cd streetcode-backend-RomaPavl && docker compose up & sleep 30
     - name: Check frontend' logs
       run: docker logs streetcode-backend-romapavl-frontend-1
     - name: Check backend' logs
