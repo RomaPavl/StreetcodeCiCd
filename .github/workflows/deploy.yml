@@ -27,8 +27,12 @@ jobs:
         echo "ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD=${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}" >> .env
         echo "ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH=${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}" >> .env
         echo "ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS }}" >> .env
-    - name: Save cert
-      run: mkdir -p https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.404'
+    - name: Generate HTTPS certificate
+      run: mkdir -p https && dotnet dev-certs https -ep ./https/streetcode.pfx -p "${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}"
     - name: Show cert
       run: ls -al ./https
     - name: Move .env to backend directory
