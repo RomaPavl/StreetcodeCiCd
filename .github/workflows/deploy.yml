@@ -28,9 +28,7 @@ jobs:
         echo "ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH=${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}" >> .env
         echo "ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS }}" >> .env
     - name: Save cert
-      run: mkdir -p https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
-    - name: Check cert
-      run: ls -al ./https
+      run: echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > ./streetcode.pfx
     - name: Move .env to backend directory
       run: mv .env streetcode-backend-RomaPavl/.env
     - name: Build 
