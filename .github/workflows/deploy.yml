@@ -29,6 +29,8 @@ jobs:
         echo "ASPNETCORE_URLS=${{ secrets.ASPNETCORE_URLS }}" >> .env
     - name: Save cert
       run: mkdir -p https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > https/streetcode.pfx
+    - name: Check cert
+      run: ls -al /https
     - name: Move .env to backend directory
       run: mv .env streetcode-backend-RomaPavl/.env
     - name: Build 
