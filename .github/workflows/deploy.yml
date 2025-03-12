@@ -57,8 +57,8 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin
     - name: Tag Docker images
       run: |
-        docker tag streetcode-backend-romapavl_frontend-1 ${{ secrets.DOCKER_LOGIN }}/frontend
-        docker tag streetcode-backend-romapavl_backend-1 ${{ secrets.DOCKER_LOGIN }}/backend
+        docker tag streetcode-backend-romapavl-frontend-1 ${{ secrets.DOCKER_LOGIN }}/frontend
+        docker tag streetcode-backend-romapavl-backend-1 ${{ secrets.DOCKER_LOGIN }}/backend
     - name: Push images to DockerHub
       run: |
         docker push ${{ secrets.DOCKER_LOGIN }}/frontend
