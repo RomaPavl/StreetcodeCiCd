@@ -32,11 +32,9 @@ jobs:
       with:
         dotnet-version: '6.0.404'
     - name: Generate HTTPS certificate
-      run: mkdir -p ~/.aspnet/https && dotnet dev-certs https --clean && dotnet dev-certs https -ep ~/.aspnet/https/streetcode.pfx -p "${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}"
-    - name: Chanhe permission
+      run: mkdir -p ~/.aspnet/https && echo "${{ secrets.STREETCODE_PFX }}" | base64 --decode > ~/.aspnet/https/streetcode.pfx
+    - name: Change permission
       run: chmod 644 ~/.aspnet/https/streetcode.pfx
-    - name: Show cert
-      run: ls -al ~/.aspnet/https
     - name: Get short Git SHA
       run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
     - name: Move .env to backend directory
