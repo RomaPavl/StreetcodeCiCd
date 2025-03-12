@@ -55,6 +55,8 @@ jobs:
       run: docker exec streetcode-backend-romapavl-frontend-1 curl -vk https://backend:5001/api/streetcode/getAllMainPage
     - name: Login to the DockerHub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin
+    - name: Show built Docker images
+      run: docker images
     - name: Tag Docker images
       run: |
         docker tag streetcode-backend-romapavl-frontend-1 ${{ secrets.DOCKER_LOGIN }}/frontend
