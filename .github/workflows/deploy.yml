@@ -37,6 +37,8 @@ jobs:
       run: chmod 644 ~/.aspnet/https/streetcode.pfx
     - name: Show cert
       run: ls -al ~/.aspnet/https
+    - name: Get short Git SHA
+      run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
     - name: Move .env to backend directory
       run: mv .env streetcode-backend-RomaPavl/.env
     - name: Build 
@@ -59,9 +61,9 @@ jobs:
       run: docker images
     - name: Tag Docker images
       run: |
-        docker tag streetcode-backend-romapavl-frontend-1 ${{ secrets.DOCKER_LOGIN }}/frontend
-        docker tag streetcode-backend-romapavl-backend-1 ${{ secrets.DOCKER_LOGIN }}/backend
+        docker tag streetcode-backend-romapavl-frontend ${{ secrets.DOCKER_LOGIN }}/frontend:$GITHUB_ENV
+        docker tag streetcode-backend-romapavl-backend ${{ secrets.DOCKER_LOGIN }}/backend:$GITHUB_ENV
     - name: Push images to DockerHub
       run: |
-        docker push ${{ secrets.DOCKER_LOGIN }}/frontend
-        docker push ${{ secrets.DOCKER_LOGIN }}/backend
+        docker push ${{ secrets.DOCKER_LOGIN }}/frontend:$GITHUB_ENV
+        docker push ${{ secrets.DOCKER_LOGIN }}/backend:$GITHUB_ENV
