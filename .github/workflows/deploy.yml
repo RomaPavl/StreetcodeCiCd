@@ -60,7 +60,7 @@ jobs:
     - name: Tag Docker images
       run: |
         docker tag streetcode-backend-romapavl-frontend ${{ secrets.DOCKER_LOGIN }}/frontend:$GIT_SHA
-        docker tag streetcode-backend-romapavl-backend ${{ secrets.DOCKER_LOGIN }}/backend:$GGIT_SHA
+        docker tag streetcode-backend-romapavl-backend ${{ secrets.DOCKER_LOGIN }}/backend:$GIT_SHA
     - name: Push images to DockerHub
       run: |
         docker push ${{ secrets.DOCKER_LOGIN }}/frontend:$GIT_SHA
