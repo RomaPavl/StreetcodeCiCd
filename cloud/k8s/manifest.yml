@@ -5,21 +5,6 @@ metadata:
 
 ---
 
-# 🔹 PVC для бази даних
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: sqlserver-pvc
-  namespace: streetcode
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-
----
-
 # 🔹 Backend Deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -165,8 +150,7 @@ spec:
               mountPath: /var/opt/mssql
       volumes:
         - name: sqlserver-data
-          persistentVolumeClaim:
-            claimName: sqlserver-pvc
+          emptyDir: {}
 
 ---
 

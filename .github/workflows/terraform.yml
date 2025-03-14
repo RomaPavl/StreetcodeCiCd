@@ -1,0 +1,66 @@
+name: Cloud testing
+
+on:
+  workflow_run:
+    workflows:
+      - Testing frontend and backend
+    types:
+      - completed
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: us-east-1
+    - name: Install k8s
+      uses: azure/setup-kubectl@v3
+      with: 
+        version: 'latest'
+    - name: Install terraform
+      uses: hashicorp/setup-terraform@v3
+    
+    - name: Terraform initialize
+      working-directory: ./cloud/terraform
+      run: terraform init && terraform plan
+    - name: Terraform planning
+      working-directory: ./cloud/terraform
+      run: terraform plan
+    - name: Terraform applying
+      working-directory: ./cloud/terraform
+      run: terraform apply
+
+    - name: Configure kubectl for EKS
+      run: aws eks update-kubeconfig --region eu-central-1 --name superk8s-cluster
+
+    - name: Decode certificate
+      run: mkdir -p ~/.aspnet/https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > ~/.aspnet/https/streetcode.pfx
+
+    - name: Create secret for cert in kubectl
+      run: kubectl create secret generic https-cert-secret --from-file=streetcode.pfx=~/.aspnet/https/streetcode.pfx --namespace=streetcode
+
+    - name: Show created secret
+      run: kubectl get secret https-cert-secret -n streetcode
+
+    - name: Setup k8s conf
+      working-directory: ./cloud/k8s
+      run: kubectl apply -f manifest.yml
+
+    - name: Wait for pods
+      run: kubectl wait pods --all --for condition=Ready
+    
+    - name: Show pods && services
+      run: kubectl get pods -A && kubectl get svc -n streetcode
+ 
+    - name: Launch k8s for 2m
+      run: sleep 120
+
+    - name: Delete terraform configuration
+      working-directory: ./cloud/terraform
+      run: terraform destroy
