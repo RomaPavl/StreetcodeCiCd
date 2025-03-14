@@ -37,7 +37,7 @@ jobs:
       run: terraform apply --auto-approve
 
     - name: Configure kubectl for EKS
-      run: aws eks update-kubeconfig --region us-east-1 --name super-k8s-cluster
+      run: aws eks update-kubeconfig --region us-east-2 --name super-k8s-cluster
 
     - name: Decode certificate
       run: mkdir -p ~/.aspnet/https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > ~/.aspnet/https/streetcode.pfx

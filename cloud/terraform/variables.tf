@@ -18,7 +18,7 @@ variable "AWS_EKS_CLUSTER_NAME" {
 
 variable "AWS_REGION" {
 	description = "The region"
-	default     = "us-east-1"
+	default     = "us-east-2"
 }
 
 variable "AWS_VPC_CIDR" {
