@@ -42,15 +42,21 @@ jobs:
     - name: Decode certificate
       run: mkdir -p home/runner/.aspnet/https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > home/runner/.aspnet/https/streetcode.pfx && chmod 644 home/runner/.aspnet/https/streetcode.pfx && ls -la home/runner/.aspnet/https/
     
+    - name: Setup k8s conf
+      working-directory: ./cloud/k8s
+      run: kubectl apply -f manifest.yml
+
     - name: Create secret for cert in kubectl
       run: kubectl create secret generic https-cert-secret --from-file=streetcode.pfx=home/runner/.aspnet/https/streetcode.pfx --namespace=streetcode
 
     - name: Show created secret
       run: kubectl get secret https-cert-secret -n streetcode
 
-    - name: Setup k8s conf
-      working-directory: ./cloud/k8s
-      run: kubectl apply -f manifest.yml
+    - name: Restart pods to apply secret
+      run: kubectl delete pods --all -n streetcode
+
+    - name: Wait for 10s
+      run: sleep 10
 
     - name: Show pods && services
       run: kubectl get pods -A && kubectl get svc -n streetcode
