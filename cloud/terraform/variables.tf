@@ -13,7 +13,7 @@ locals {
 
 variable "AWS_EKS_CLUSTER_NAME" {
 	description = "The name of the Kubernetes cluster"
-	default     = "superk8s-cluster"
+	default     = "super-k8s-cluster"
 }
 
 variable "AWS_REGION" {
