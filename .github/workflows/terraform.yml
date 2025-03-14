@@ -40,13 +40,10 @@ jobs:
       run: aws eks update-kubeconfig --region eu-central-1 --name super-k8s-cluster
 
     - name: Decode certificate
-      run: mkdir -p ~/.aspnet/https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > ~/.aspnet/https/streetcode.pfx && chmod 644 ~/.aspnet/https/streetcode.pfx && ls -la ~/.aspnet/https/
+      run: mkdir -p home/runner/.aspnet/https && echo "${{ secrets.STREETCODE_CERT }}" | base64 --decode > home/runner/.aspnet/https/streetcode.pfx && chmod 644 home/runner/.aspnet/https/streetcode.pfx && ls -la home/runner/.aspnet/https/
     
-    - name: Get absolute path
-      run: echo "CERT_PATH=$(realpath ~/.aspnet/https/streetcode.pfx)" >> $GITHUB_ENV
-
     - name: Create secret for cert in kubectl
-      run: kubectl create secret generic https-cert-secret --from-file=streetcode.pfx=$CERT_PATH --namespace=streetcode
+      run: kubectl create secret generic https-cert-secret --from-file=streetcode.pfx=home/runner/.aspnet/https/streetcode.pfx --namespace=streetcode
 
     - name: Show created secret
       run: kubectl get secret https-cert-secret -n streetcode
