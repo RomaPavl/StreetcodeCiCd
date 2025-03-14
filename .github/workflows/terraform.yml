@@ -34,7 +34,7 @@ jobs:
       run: terraform plan
     - name: Terraform applying
       working-directory: ./cloud/terraform
-      run: terraform apply
+      run: terraform apply --auto-approve
 
     - name: Configure kubectl for EKS
       run: aws eks update-kubeconfig --region eu-central-1 --name superk8s-cluster
@@ -63,4 +63,4 @@ jobs:
 
     - name: Delete terraform configuration
       working-directory: ./cloud/terraform
-      run: terraform destroy
+      run: terraform destroy --auto-approve
