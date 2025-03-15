@@ -60,13 +60,10 @@ jobs:
 
     - name: Show pods && services
       run: kubectl get pods -A && kubectl get svc -n streetcode
-
-    - name: Wait for pods
-      run: kubectl wait pods --all --for condition=Ready
  
-    - name: Launch k8s for 2m
-      run: sleep 120
-
+    - name: Launch k8s for 3m
+      run: sleep 180
+ 
     - name: Delete terraform configuration
       if: always()
       working-directory: ./cloud/terraform
