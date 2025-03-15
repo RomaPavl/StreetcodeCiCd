@@ -63,7 +63,9 @@ module "eks" {
 
       instance_types = ["t3.large"]
       capacity_type  = "SPOT"
-
+      lifecycle = {
+					create_before_destroy = true
+			}
     }
   }
 
