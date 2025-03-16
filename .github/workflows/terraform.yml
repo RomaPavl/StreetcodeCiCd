@@ -63,7 +63,10 @@ jobs:
  
     - name: Launch k8s for 3m
       run: sleep 180
- 
+      
+    - name: Deleting all api services 
+      run: kubectl delete all --all -n streetcode
+      
     - name: Delete terraform configuration
       if: always()
       working-directory: ./cloud/terraform
