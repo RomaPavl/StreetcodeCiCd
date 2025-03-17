@@ -61,9 +61,13 @@ jobs:
     - name: Show pods && services
       run: kubectl get pods -A && kubectl get svc -n streetcode
  
-    - name: Launch k8s for 3m
-      run: sleep 180
-      
+    - name: Keep alive
+      run: |
+        for i in {1..45}; do
+          echo "Workflow is still running... $i"
+          sleep 60
+        done
+
     - name: Deleting all api services 
       run: kubectl delete all --all -n streetcode
       
